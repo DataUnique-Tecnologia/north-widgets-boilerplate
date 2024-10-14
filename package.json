@@ -2,7 +2,9 @@
 	"scripts": {
 		"dev": "npm run build -- --sourcemap=inline --watch",
 		"build": "bun build js/widget.tsx --minify --format=esm --outdir=src/north_widgets_boilerplate/static --asset-naming=[name].[ext]",
-		"typecheck": "tsc --noEmit"
+		"build:injection": "bun bundle.tsx --name <PROJECT_NAME>",
+		"typecheck": "tsc --noEmit",
+		"postinstall": "node scripts/setup.js"
 	},
 	"dependencies": {
 		"@anywidget/react": "^0.0.8",
@@ -10,6 +12,7 @@
 		"react-dom": "^18.3.1"
 	},
 	"devDependencies": {
+		"@types/bun": "^1.1.11",
 		"@types/react": "^18.3.9",
 		"@types/react-dom": "^18.3.0",
 		"typescript": "^5.6.2"

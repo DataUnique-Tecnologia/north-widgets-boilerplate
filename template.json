@@ -1,0 +1,11 @@
+{
+	"name": "north-widgets",
+	"description": "Template de widgets para north",
+	"version": "1.0.0",
+	"variables": {
+		"projectName": {
+			"description": "Nome do projeto",
+			"default": "meu-projeto"
+		}
+	}
+}

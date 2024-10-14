@@ -6,6 +6,7 @@
 		"typecheck": "tsc --noEmit",
 		"postinstall": "node scripts/setup.js"
 	},
+	"type": "module",
 	"dependencies": {
 		"@anywidget/react": "^0.0.8",
 		"react": "^18.3.1",

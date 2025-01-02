@@ -1,0 +1,22 @@
+export type VegaChartType =
+  | "bar"
+  | "arc"
+  | "square"
+  | "tick"
+  | "line"
+  | "area"
+  | "point"
+  | "geoshape"
+  | "rule"
+  | "text"
+
+export type ChartType =
+  | "bar"
+  | "stacked_bar"
+  | "normalized_stacked_bar"
+  | "arc"
+  | "line"
+  | "stacked_area"
+  | "normalized_stacked_area"
+  | "point"
+  | "histogram_bar"

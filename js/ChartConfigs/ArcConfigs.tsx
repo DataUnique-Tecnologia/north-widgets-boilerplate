@@ -3,7 +3,6 @@ import React, { useMemo } from 'react'
 import { ColumnsInfoType } from '../types/ColumnsInfoType'
 import styled from '@emotion/styled'
 import { FaAngleDown } from 'react-icons/fa'
-import { debounce } from 'lodash'
 import { ConfigsType } from '../types/ConfigsType'
 
 type FormData = ConfigsType['arc']
@@ -33,10 +32,12 @@ const StyledSubSelectTitle = styled.h6(() => ({
 
 export default function ArcConfigs({
     columnsInfo,
-    onChange
+    onChange,
+    initialValue
 }: {
     columnsInfo: ColumnsInfoType
     onChange: (value: FormData) => void
+    initialValue?: Partial<FormData>
 }) {
 
     const [form] = Form.useForm<FormData>()
@@ -58,14 +59,12 @@ export default function ArcConfigs({
         })
     }, [columnsInfo])
 
-    const handleValuesChange = useMemo(() => (
-        debounce(async () => {
+    const handleValuesChange = async () => {
             try {
                 const formValues = form.getFieldsValue()
                 onChange(formValues);
             } catch (error) { }
-        }, 1500)
-    ), [])
+        }
 
     const initialValues: FormData = {
         theta: undefined,
@@ -82,7 +81,7 @@ export default function ArcConfigs({
             >
                 <Flex vertical>
                     <StyledGroupTitle>Dados para fatias</StyledGroupTitle>
-                    <Form.Item name={'theta'} noStyle>
+                    <Form.Item initialValue={initialValue?.theta} name={'theta'} noStyle>
                         <Select
                             suffixIcon={<FaAngleDown />}
                             placeholder="Coluna"
@@ -92,7 +91,7 @@ export default function ArcConfigs({
                 </Flex>
                 <Flex justify='space-between' align='center'>
                     <StyledSubSelectTitle>Agrupar por</StyledSubSelectTitle>
-                    <Form.Item name={'group_by'} noStyle>
+                    <Form.Item initialValue={initialValue?.group_by} name={'group_by'} noStyle>
                         <StyledSubSelect
                             suffixIcon={<FaAngleDown />}
                             size='small'

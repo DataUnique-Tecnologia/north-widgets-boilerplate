@@ -3,10 +3,9 @@ import React, { useMemo } from 'react'
 import { ColumnsInfoType, ColumnsType } from '../types/ColumnsInfoType'
 import styled from '@emotion/styled'
 import { FaAngleDown, FaCaretRight } from 'react-icons/fa'
-import { debounce } from 'lodash'
 import { ConfigsType } from '../types/ConfigsType'
 
-type FormData = Omit<ConfigsType, 'histogram' | 'mark'>
+type FormData = Omit<ConfigsType, 'histogram' | 'mark' | 'arc'>
 
 const StyledCollapse = styled(Collapse)(() => ({
   '.ant-collapse-expand-icon': {
@@ -53,10 +52,12 @@ const StyledSelectDesc = styled.span(() => ({
 
 export default function DefaultXYConfigs({
   columnsInfo,
-  onChange
+  onChange,
+  initialValue
 }: {
   columnsInfo: ColumnsInfoType
   onChange: (values: FormData) => void
+  initialValue?: Partial<FormData>
 }) {
 
   const [form] = Form.useForm<FormData>()
@@ -68,14 +69,12 @@ export default function DefaultXYConfigs({
     ))
   }, [columnsInfo])
 
-  const handleValuesChange = useMemo(() => (
-    debounce(async () => {
+  const handleValuesChange = async () => {
       try {
         const formValues = form.getFieldsValue()
         onChange(formValues);
       } catch (error) { }
-    }, 1500)
-  ), [])
+    }
 
   const getAggOptions = (type?: ColumnsType) => {
     if (type && ['object', 'str', 'bool'].includes(type)) {
@@ -169,12 +168,12 @@ export default function DefaultXYConfigs({
       <Form
         form={form}
         layout='vertical'
-        initialValues={initialValues}
+        initialValues={initialValue??initialValues}
         onValuesChange={handleValuesChange}
       >
         <Flex vertical>
           <StyledGroupTitle>Eixo X</StyledGroupTitle>
-          <Form.Item name={['x_axys', 'column']} noStyle>
+          <Form.Item initialValue={initialValue?.x_axys?.column} name={['x_axys', 'column']} noStyle>
             <Select
               suffixIcon={<FaAngleDown />}
               placeholder="Coluna"
@@ -193,7 +192,7 @@ export default function DefaultXYConfigs({
           )}
           items={[{
             key: 1,
-            children: <Form.Item name={['x_axys', 'title']} noStyle>
+            children: <Form.Item initialValue={initialValue?.x_axys?.title} name={['x_axys', 'title']} noStyle>
               <Input placeholder='Eixo X' size='small' />
             </Form.Item>,
             label: 'Renomear'
@@ -201,7 +200,7 @@ export default function DefaultXYConfigs({
         />
         <Flex justify='space-between' align='center'>
           <StyledSubSelectTitle>Ordenação</StyledSubSelectTitle>
-          <Form.Item name={['x_axys', 'order_by']} noStyle>
+          <Form.Item initialValue={initialValue?.x_axys?.order_by} name={['x_axys', 'order_by']} noStyle>
             <StyledSubSelect
               suffixIcon={<FaAngleDown />}
               size='small'
@@ -232,7 +231,7 @@ export default function DefaultXYConfigs({
         <Flex vertical gap={4} style={{ marginTop: '12px' }}>
           <StyledGroupTitle>Eixo Y</StyledGroupTitle>
           <Flex vertical>
-            <Form.Item name={['y_axys', 'column']} noStyle>
+            <Form.Item initialValue={initialValue?.y_axys?.column} name={['y_axys', 'column']} noStyle>
               <Select
                 suffixIcon={<FaAngleDown />}
                 placeholder="Coluna"
@@ -251,7 +250,7 @@ export default function DefaultXYConfigs({
             )}
             items={[{
               key: 1,
-              children: <Form.Item name={['y_axys', 'title']} noStyle>
+              children: <Form.Item initialValue={initialValue?.y_axys?.title} name={['y_axys', 'title']} noStyle>
                 <Input placeholder='Eixo Y' size='small' />
               </Form.Item>,
               label: 'Renomear'
@@ -259,7 +258,7 @@ export default function DefaultXYConfigs({
           />
           <Flex justify='space-between' align='center'>
             <StyledSubSelectTitle>Agregação</StyledSubSelectTitle>
-            <Form.Item name={['y_axys', 'aggregate']} noStyle>
+            <Form.Item initialValue={initialValue?.y_axys?.aggregate} name={['y_axys', 'aggregate']} noStyle>
               <StyledSubSelect
                 suffixIcon={<FaAngleDown />}
                 size='small'
@@ -288,6 +287,7 @@ export default function DefaultXYConfigs({
             <StyledSubSelectTitle>Agrupar por</StyledSubSelectTitle>
             <Form.Item
               name={['y_axys', 'group_by']}
+              initialValue={initialValue?.y_axys?.group_by}
               noStyle
             >
               <StyledSubSelect

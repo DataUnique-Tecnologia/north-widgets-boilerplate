@@ -1,6 +1,8 @@
 import importlib.metadata
 import pathlib
 from typing import List
+
+from .types.configs import ConfigsType
 from .utils import get_columns_info, get_datasource, get_default_theme
 import pandas as pd
 import anywidget
@@ -21,10 +23,20 @@ class CrossChart(anywidget.AnyWidget):
     theme: Theme = traitlets.Dict(get_default_theme()).tag(sync=True)
     columns_info: List = traitlets.List([]).tag(sync=True)
     datasource: List = traitlets.List([]).tag(sync=True)
-    
+    configs: ConfigsType = traitlets.Dict({
+		'mark': {
+			'type': 'bar',
+			'configs': {
+				'normalized': False,
+				'stacked': False
+			}
+		},
+	}).tag(sync=True)
+
     def __init__(
         self,
         dataframe: pd.DataFrame,
+        configs: ConfigsType | None = None,
         theme: Theme | None = None,
         *args,
         **kwargs
@@ -34,5 +46,10 @@ class CrossChart(anywidget.AnyWidget):
         self.columns_info = get_columns_info(dataframe)
         self.datasource = get_datasource(dataframe)
 
+        if configs:
+            self.configs = configs
         if theme:
             self.theme = theme
+
+    def get_configs(self):
+        return self.configs

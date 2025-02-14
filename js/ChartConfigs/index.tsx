@@ -12,10 +12,12 @@ import ArcConfigs from './ArcConfigs'
 
 export default function ChartConfigs({
     columnsInfo,
-    setConfigs
+    setConfigs,
+    configs,
 }: {
     columnsInfo: ColumnsInfoType
     setConfigs: Dispatch<SetStateAction<ConfigsType>>
+    configs: Partial<ConfigsType>
 }) {
     const [chartType, setChartType] = useState<ChartType>('bar')
 
@@ -180,6 +182,7 @@ export default function ChartConfigs({
             {
                 chartType === 'histogram_bar'
                     ? <HistogramConfigs
+                        initialValue={configs.histogram}
                         onChange={(value) => {
                             setConfigs(prev => ({
                                 ...prev,
@@ -193,6 +196,7 @@ export default function ChartConfigs({
                     />
                     : chartType === 'arc'
                         ? <ArcConfigs
+                            initialValue={configs.arc}
                             onChange={(value) => {
                                 setConfigs(prev => ({
                                     ...prev,
@@ -205,6 +209,7 @@ export default function ChartConfigs({
                             columnsInfo={columnsInfo}
                         />
                         : <DefaultXYConfigs
+                            initialValue={{ x_axys: configs.x_axys, y_axys: configs.y_axys }}
                             onChange={(value) => {
                                 setConfigs(prev => ({
                                     ...prev,

@@ -3,7 +3,6 @@ import React, { useMemo } from 'react'
 import { ColumnsInfoType } from '../types/ColumnsInfoType'
 import styled from '@emotion/styled'
 import { FaAngleDown } from 'react-icons/fa'
-import { debounce } from 'lodash'
 import { ConfigsType } from '../types/ConfigsType'
 
 type FormData = ConfigsType['histogram']
@@ -12,31 +11,14 @@ const StyledGroupTitle = styled.h4(() => ({
     margin: '0 0 4px 0'
 }))
 
-const StyledSubSelect = styled(Select)(() => ({
-    '.ant-select-selection-item': {
-        fontSize: '12px',
-        fontWeight: 700
-    },
-
-    '.ant-select-selection-placeholder': {
-        fontSize: '12px',
-        fontWeight: 700
-    }
-}))
-
-const StyledSubSelectTitle = styled.h6(() => ({
-    margin: 0,
-    opacity: 0.5,
-    fontSize: '12px',
-    fontWeight: 700
-}))
-
 export default function HistogramConfigs({
     columnsInfo,
-    onChange
+    onChange,
+    initialValue
 }: {
     columnsInfo: ColumnsInfoType
     onChange: (value: FormData) => void
+    initialValue?: Partial<FormData>
 }) {
 
     const [form] = Form.useForm<FormData>()
@@ -52,14 +34,12 @@ export default function HistogramConfigs({
         })
     }, [columnsInfo])
 
-    const handleValuesChange = useMemo(() => (
-		debounce(async () => {
-			try {
-				const formValues = form.getFieldsValue()
-				onChange(formValues);
-			} catch (error) { }
-		}, 1500)
-	), [])
+    const handleValuesChange = async () => {
+        try {
+            const formValues = form.getFieldsValue()
+            onChange(formValues);
+        } catch (error) { }
+    }
 
     const initialValues: FormData = {
         column: undefined,
@@ -77,7 +57,7 @@ export default function HistogramConfigs({
             >
                 <Flex vertical>
                     <StyledGroupTitle>Eixo X</StyledGroupTitle>
-                    <Form.Item name={'column'} noStyle>
+                    <Form.Item initialValue={initialValue?.column} name={'column'} noStyle>
                         <Select
                             suffixIcon={<FaAngleDown />}
                             placeholder="Coluna"
@@ -85,7 +65,7 @@ export default function HistogramConfigs({
                         />
                     </Form.Item>
                 </Flex>
-                <Flex justify='space-between' align='center'>
+                {/* <Flex justify='space-between' align='center'>
                     <StyledSubSelectTitle>Agrupar por intervalos</StyledSubSelectTitle>
                     <Form.Item name={'bin_by'} noStyle>
                         <StyledSubSelect
@@ -100,7 +80,7 @@ export default function HistogramConfigs({
                             ]}
                         />
                     </Form.Item>
-                </Flex>
+                </Flex> */}
             </Form>
         </>
     )

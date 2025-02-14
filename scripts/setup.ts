@@ -43,14 +43,8 @@ async function main(currentFolderName: string) {
         "build:injection": `bun bundle.tsx --name ${packageJson.name}`
     }
 
-	// Salvar alterações no package.json
 	fs.writeFileSync(packagePath, JSON.stringify(packageJson, null, 4));
 
-	// Renomear a pasta do projeto, se necessário
-	// console.log("Renomeando", {
-	// 	projectName,
-	// 	currentFolderName,
-	// });
 	if (projectName && projectName !== currentFolderName) {
 		try {
 			renameProjectFolder(path.resolve(currentFolderName, '..'), projectName);

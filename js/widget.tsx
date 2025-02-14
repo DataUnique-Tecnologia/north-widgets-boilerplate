@@ -11,19 +11,11 @@ import { FaEye, FaEyeSlash } from "react-icons/fa";
 const render = createRender(() => {
 	const [columnsInfo] = useModelState<ColumnsInfoType>('columns_info')
 	const [datasource] = useModelState<any[]>('datasource')
-	const [modelConfigs, setModelConfigs] = useModelState<ConfigsType>('configs')
-
+	const [configs, setConfigs] = useModelState<ConfigsType | null>('configs')
 	const [isConfigsVisible, setIsConfigsVisible] = React.useState<boolean>(true)
 
-	const [configs, setConfigs] = React.useState<ConfigsType>(modelConfigs)
-
-	React.useEffect(() => {
-		if (configs && JSON.stringify(configs) !== JSON.stringify(modelConfigs)) {
-			setModelConfigs(configs)
-		}
-	}, [configs])
-
 	const spec: VisualizationSpec = useMemo(() => {
+		if(!configs) return
 		const { x_axys, y_axys, histogram, mark, arc } = configs;
 		const staticSpec: VisualizationSpec = {
 			$schema: 'https://vega.github.io/schema/vega-lite/v5.json',
@@ -95,7 +87,6 @@ const render = createRender(() => {
 			}
 		};
 
-		console.log({ encoding, mark })
 		return {
 			$schema: 'https://vega.github.io/schema/vega-lite/v5.json',
 			mark: {
@@ -124,7 +115,7 @@ const render = createRender(() => {
 			/>
 			<Row>
 				{
-					isConfigsVisible && <Col span={8}>
+					configs && isConfigsVisible && <Col span={8}>
 						<ChartConfigs
 							configs={configs}
 							setConfigs={setConfigs}

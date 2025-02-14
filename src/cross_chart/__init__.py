@@ -1,12 +1,13 @@
 import importlib.metadata
 import pathlib
-from typing import List
+from typing import List, Optional
 
 from .types.configs import ConfigsType
 from .utils import get_columns_info, get_datasource, get_default_theme
 import pandas as pd
 import anywidget
 import traitlets
+import json
 
 from .types.theme import Theme
 
@@ -23,21 +24,13 @@ class CrossChart(anywidget.AnyWidget):
     theme: Theme = traitlets.Dict(get_default_theme()).tag(sync=True)
     columns_info: List = traitlets.List([]).tag(sync=True)
     datasource: List = traitlets.List([]).tag(sync=True)
-    configs: ConfigsType = traitlets.Dict({
-		'mark': {
-			'type': 'bar',
-			'configs': {
-				'normalized': False,
-				'stacked': False
-			}
-		},
-	}).tag(sync=True)
+    configs: ConfigsType | None = traitlets.Any(None).tag(sync=True)
 
     def __init__(
         self,
         dataframe: pd.DataFrame,
-        configs: ConfigsType | None = None,
-        theme: Theme | None = None,
+        configs: Optional[ConfigsType | str] = None,
+        theme: Optional[Theme] = None,
         *args,
         **kwargs
     ):
@@ -46,8 +39,22 @@ class CrossChart(anywidget.AnyWidget):
         self.columns_info = get_columns_info(dataframe)
         self.datasource = get_datasource(dataframe)
 
-        if configs:
-            self.configs = configs
+        if configs:            
+            if isinstance(configs, str):
+                self.configs = json.loads(configs)
+            else:
+                self.configs = configs
+        else:
+            self.configs = {
+                'mark': {
+                    'type': 'bar',
+                    'configs': {
+                        'normalized': False,
+                        'stacked': False
+                    }
+                },
+            }
+                
         if theme:
             self.theme = theme
 

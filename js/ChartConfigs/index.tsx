@@ -1,6 +1,6 @@
 import { Divider, Flex, Select } from 'antd'
 import { DefaultOptionType } from 'antd/es/select'
-import React, { Dispatch, SetStateAction, useState } from 'react'
+import React, { useState } from 'react'
 import { BiBarChartAlt2 } from 'react-icons/bi'
 import { MdBarChart, MdStackedBarChart, MdAreaChart, MdScatterPlot, MdPieChart, MdSsidChart } from 'react-icons/md'
 import { ColumnsInfoType } from '../types/ColumnsInfoType'
@@ -16,11 +16,10 @@ export default function ChartConfigs({
     configs,
 }: {
     columnsInfo: ColumnsInfoType
-    setConfigs: Dispatch<SetStateAction<ConfigsType>>
-    configs: Partial<ConfigsType>
+    setConfigs: (value: ConfigsType) => void
+    configs: ConfigsType
 }) {
     const [chartType, setChartType] = useState<ChartType>('bar')
-
     const chartOptions: DefaultOptionType[] = [
         {
             label: 'Gráfico de barras',
@@ -141,27 +140,26 @@ export default function ChartConfigs({
             configs: { normalized: isNormalized, stacked: isStacked }
         }
 
-        setConfigs(prev => {
-            if (isHistogram) {
-                return {
-                    mark,
-                    histogram: {
-                        bin_by: 'auto',
-                        format: 'count'
-                    }
+        if (isHistogram) {
+            setConfigs({
+                mark,
+                histogram: {
+                    bin_by: 'auto',
+                    format: 'count'
                 }
-            } else if (markType === 'arc') {
-                return {
-                    mark,
-                    arc: { group_by: 'none' }
-                }
-            }
+            })
+        } else if (markType === 'arc') {
+            setConfigs({
+                mark,
+                arc: { group_by: 'none' }
+            })
+        } else {
 
-            return ({
-                ...prev,
+            setConfigs({
+                ...configs,
                 mark
             })
-        })
+        }
     }
 
     return (
@@ -184,13 +182,13 @@ export default function ChartConfigs({
                     ? <HistogramConfigs
                         initialValue={configs.histogram}
                         onChange={(value) => {
-                            setConfigs(prev => ({
-                                ...prev,
+                            setConfigs({
+                                ...configs,
                                 histogram: value,
                                 arc: undefined,
                                 x_axys: undefined,
                                 y_axys: undefined,
-                            }))
+                            })
                         }}
                         columnsInfo={columnsInfo}
                     />
@@ -198,25 +196,25 @@ export default function ChartConfigs({
                         ? <ArcConfigs
                             initialValue={configs.arc}
                             onChange={(value) => {
-                                setConfigs(prev => ({
-                                    ...prev,
+                                setConfigs({
+                                    ...configs,
                                     arc: value,
                                     histogram: undefined,
                                     x_axys: undefined,
                                     y_axys: undefined,
-                                }))
+                                })
                             }}
                             columnsInfo={columnsInfo}
                         />
                         : <DefaultXYConfigs
                             initialValue={{ x_axys: configs.x_axys, y_axys: configs.y_axys }}
                             onChange={(value) => {
-                                setConfigs(prev => ({
-                                    ...prev,
+                                setConfigs({
+                                    ...configs,
                                     ...value,
                                     arc: undefined,
                                     histogram: undefined
-                                }))
+                                })
                             }}
                             columnsInfo={columnsInfo}
                         />

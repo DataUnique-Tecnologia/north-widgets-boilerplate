@@ -52,7 +52,7 @@ export default function HistogramConfigs({
             <Form
                 form={form}
                 layout='vertical'
-                initialValues={initialValues}
+                initialValues={initialValue??initialValues}
                 onValuesChange={handleValuesChange}
             >
                 <Flex vertical>

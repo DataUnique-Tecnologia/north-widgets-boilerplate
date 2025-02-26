@@ -25,11 +25,13 @@ class CrossChart(anywidget.AnyWidget):
     columns_info: List = traitlets.List([]).tag(sync=True)
     datasource: List = traitlets.List([]).tag(sync=True)
     configs: ConfigsType | None = traitlets.Any(None).tag(sync=True)
+    allow_changes: bool = traitlets.Bool(True).tag(sync=True)
 
     def __init__(
         self,
         dataframe: pd.DataFrame,
         configs: Optional[ConfigsType | str] = None,
+        allow_changes: Optional[bool] = True,
         theme: Optional[Theme] = None,
         *args,
         **kwargs
@@ -38,6 +40,8 @@ class CrossChart(anywidget.AnyWidget):
 
         self.columns_info = get_columns_info(dataframe)
         self.datasource = get_datasource(dataframe)
+        
+        self.allow_changes = allow_changes
 
         if configs:            
             if isinstance(configs, str):

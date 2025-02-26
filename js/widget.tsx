@@ -12,10 +12,12 @@ const render = createRender(() => {
 	const [columnsInfo] = useModelState<ColumnsInfoType>('columns_info')
 	const [datasource] = useModelState<any[]>('datasource')
 	const [configs, setConfigs] = useModelState<ConfigsType | null>('configs')
+	const [allowChanges] = useModelState<boolean>('allow_changes')
+
 	const [isConfigsVisible, setIsConfigsVisible] = React.useState<boolean>(true)
 
 	const spec: VisualizationSpec = useMemo(() => {
-		if(!configs) return
+		if (!configs) return
 		const { x_axys, y_axys, histogram, mark, arc } = configs;
 		const staticSpec: VisualizationSpec = {
 			$schema: 'https://vega.github.io/schema/vega-lite/v5.json',
@@ -100,22 +102,24 @@ const render = createRender(() => {
 
 	return (
 		<div style={{ position: 'relative' }}>
-			<Button
-				size="small"
-				shape="circle"
-				style={{
-					zIndex: 99,
-					position: 'absolute',
-					top: isConfigsVisible ? 0 : 5,
-					left: isConfigsVisible ? 104 : 5,
-					opacity: 0.5
-				}}
-				icon={isConfigsVisible ? <FaEye /> : <FaEyeSlash />}
-				onClick={() => setIsConfigsVisible(!isConfigsVisible)}
-			/>
+			{
+				allowChanges && <Button
+					size="small"
+					shape="circle"
+					style={{
+						zIndex: 99,
+						position: 'absolute',
+						top: isConfigsVisible ? 0 : 5,
+						left: isConfigsVisible ? 104 : 5,
+						opacity: 0.5
+					}}
+					icon={isConfigsVisible ? <FaEye /> : <FaEyeSlash />}
+					onClick={() => setIsConfigsVisible(!isConfigsVisible)}
+				/>
+			}
 			<Row>
 				{
-					configs && isConfigsVisible && <Col span={8}>
+					allowChanges && configs && isConfigsVisible && <Col span={8}>
 						<ChartConfigs
 							configs={configs}
 							setConfigs={setConfigs}

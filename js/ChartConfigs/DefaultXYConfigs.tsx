@@ -260,6 +260,7 @@ export default function DefaultXYConfigs({
             <StyledSubSelectTitle>Agregação</StyledSubSelectTitle>
             <Form.Item initialValue={initialValue?.y_axys?.aggregate} name={['y_axys', 'aggregate']} noStyle>
               <StyledSubSelect
+                dropdownStyle={{width: '175px'}}
                 suffixIcon={<FaAngleDown />}
                 size='small'
                 placeholder='Agregação'
@@ -291,6 +292,7 @@ export default function DefaultXYConfigs({
               noStyle
             >
               <StyledSubSelect
+                dropdownStyle={{width: '175px'}}
                 suffixIcon={<FaAngleDown />}
                 size='small'
                 placeholder='Agrupar por'

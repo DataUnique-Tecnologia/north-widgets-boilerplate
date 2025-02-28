@@ -26,6 +26,7 @@ class CrossChart(anywidget.AnyWidget):
     datasource: List = traitlets.List([]).tag(sync=True)
     configs: ConfigsType | None = traitlets.Any(None).tag(sync=True)
     allow_changes: bool = traitlets.Bool(True).tag(sync=True)
+    dataframe: pd.DataFrame | None = None
 
     def __init__(
         self,
@@ -37,9 +38,13 @@ class CrossChart(anywidget.AnyWidget):
         **kwargs
     ):
         super().__init__(*args, **kwargs)
+        self.dataframe = dataframe
+        for col in self.dataframe.select_dtypes(include=['datetime64']).columns:
+            self.dataframe[col] = self.dataframe[col].astype('object').where(pd.notna(self.dataframe[col]), None)
+        self.dataframe = self.dataframe.fillna('')
 
-        self.columns_info = get_columns_info(dataframe)
-        self.datasource = get_datasource(dataframe)
+        self.columns_info = get_columns_info(self.dataframe)
+        self.datasource = get_datasource(self.dataframe)
         
         self.allow_changes = allow_changes
 
